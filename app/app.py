@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import shap
+import os
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.datasets import fetch_openml
@@ -14,6 +15,9 @@ st.set_page_config(
     layout="wide"
 )
 
+# Base directory path fix for deployment
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Title
 st.title("🏦 Loan Default Predictor")
 st.markdown("Predict whether a loan applicant is likely to default using Machine Learning")
@@ -22,7 +26,7 @@ st.markdown("---")
 # Load model
 @st.cache_resource
 def load_model():
-    model = joblib.load('../models/xgb_model.pkl')
+    model = joblib.load(os.path.join(BASE_DIR, 'models', 'xgb_model.pkl'))
     return model
 
 # Load and preprocess data
@@ -62,8 +66,8 @@ residence_since = st.sidebar.slider("Residence Since (years)", 1, 4, 2)
 existing_credits = st.sidebar.slider("Existing Credits", 1, 4, 1)
 num_dependents = st.sidebar.slider("Number of Dependents", 1, 2, 1)
 
-checking_status = st.sidebar.selectbox("Checking Account Status", 
-                                        ['no checking', 'less than 0 DM', 
+checking_status = st.sidebar.selectbox("Checking Account Status",
+                                        ['no checking', 'less than 0 DM',
                                          '0 to 200 DM', 'greater than 200 DM'])
 credit_history = st.sidebar.selectbox("Credit History",
                                        ['no credits', 'all paid', 'existing paid',
@@ -168,4 +172,6 @@ else:
     """)
 
     st.subheader("📈 Top Features Driving Predictions")
-    st.image('../data/shap_summary.png')
+    shap_img_path = os.path.join(BASE_DIR, 'data', 'shap_summary.png')
+    if os.path.exists(shap_img_path):
+        st.image(shap_img_path)
