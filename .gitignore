@@ -4,9 +4,9 @@ data/
 *.xlsx
 
 # Saved models (large binary files)
-models/
-*.pkl
-*.joblib
+#models/
+#*.pkl
+#*.joblib
 *.h5
 
 # Jupyter checkpoints
